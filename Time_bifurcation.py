@@ -8,8 +8,8 @@ import os
 from scipy.interpolate import interp1d
 from scipy.spatial import ConvexHull
 from datetime import datetime
-
-
+from multiprocessing import Pool
+np.random.seed(42)
 def get_dynamics(z_curr, attention, V, i):
     """
     - Returns: the dynamics z'(t) = (z_1'(t), ... , z_n'(t)) at some time-step t.
@@ -52,8 +52,11 @@ def calculate_distance_from_viewing_direction(point):
 ####### Distance to the clusters
 def distance_to_clusters(clusters,z,t): 
     d=0
-    for x in clusters:
-        d=min(d,np.linalg.norm(z[:, t, :]-x))
+    for i in range(n):
+        d_i=100
+        for x in clusters:
+            d_i=min(d_i,np.linalg.norm(z[i, t, :]-x))
+        d=max(d,d_i)
     return(d)
 ####### Time bifurcation
 def time_bifurcation(clusters,z,T,dt,delta):
@@ -64,44 +67,50 @@ def time_bifurcation(clusters,z,T,dt,delta):
     for t in integration_time:
         if distance_to_clusters(clusters,z,int(t/dt))<delta and x==0:
             x=t
-        elif distance_to_clusters(clusters,z,int(t/dt))>2*delta and x>0:
+        if distance_to_clusters(clusters,z,int(t/dt))>delta and x!=0:
             x2=t
             break
     return(x,x2)
-####### Hyperparameters of the experience
 
+####### Hyperparameters of the experience
 geometries = ["1rankattention","polytope", "hyperplanes", "codimension-k", "hyperplanes x polytope","LoRA","V_finetune","V_finetune_3","degenerate"]
 L_clus=[]
 L_phase=[]
-T = 10
+Time = 50
 dt = 0.1
 d = 2
 n=20
-num_steps = int(T/dt)+1
-x0 = np.random.uniform(low=-5, high=5, size=(n, d))
-integration_time = np.linspace(0, T, num_steps)
+num_steps = int(Time/dt)+1
+x0 = np.random.uniform(low=-1, high=1, size=(n, d))
+integration_time = np.linspace(0, Time, num_steps)
 movie = False
 conv = False
 show_polytope = False
 V=np.eye(d)
 A = np.eye(d)
-z=transformer(T, dt, n, d, A, V, x0)
+z=transformer(Time, dt, n, d, A, V, x0)
 delta=0.1
-clusters=z[:, -1, :]
-for epsilon in [0.8,0.5,0.2,1e-1,1e-2,1e-3,1e-4,1e-5,1e-6,1e-7]:
-    v=np.array([1,0,0,1-epsilon])
-    V = v.reshape(2,2)
-    color = '#3a4cc1'
-    z=transformer(T, dt, n, d, A, V, x0)
-    L_clus.append(time_bifurcation(clusters,z,T,dt,delta)[0])
-    L_phase.append(time_bifurcation(clusters,z,T,dt,delta)[1])
+clusters=[ z[i, -1, :] for i in range(n)]
+L_e=[0.10,0.15,0.20,0.25,0.30]
+def T(epsilon):
+  v=np.array([1,0,0,1-epsilon])
+  V = v.reshape(2,2)
+  z=transformer(Time, dt, n, d, A, V, x0)
+  return(time_bifurcation(clusters,z,Time,dt,delta)[0],time_bifurcation(clusters,z,Time,dt,delta)[1])
+
+with Pool(5) as p:
+  L=p.map(T,L_e)
+  for i in range (len(L)):
+    L_clus.append(L[i][0])
+    L_phase.append(L[i][1])
 
 plt.figure()
-plt.plot([0.5,1e-1,1e-2,1e-3,1e-4,1e-5,1e-6,1e-7,1e-8],L_clus,'o',label='Time cluster')
-plt.plot([0.5,1e-1,1e-2,1e-3,1e-4,1e-5,1e-6,1e-7,1e-8],L_phase,'o',label='Time bifurcation')
+plt.plot(L_e,L_clus,'o',label='Time cluster')
+plt.plot(L_e,L_phase,'o',label='Time bifurcation')
 plt.ylabel('Time bifurcation')
 plt.xlabel('epsilon')
 plt.xscale('log')
 plt.yscale('log')
 plt.savefig('time_bifurcation.pdf', format='pdf', bbox_inches='tight')
+plt.legend()
 plt.show()
