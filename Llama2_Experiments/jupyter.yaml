@@ -1,0 +1,20 @@
+# jupyter.yaml
+
+name: jupyter
+workdir: .
+resources:
+  accelerators: A10G:1
+  use_spot: True
+file_mounts:
+  /npfiles::
+    name: npfiles-rank-estimation # NOTE: Fill in your bucket name
+    store: s3
+    mode: MOUNT
+setup: |
+  pip install -r requirement.txt
+  pip install jupyter
+envs:
+  HF_AUTH_TOKEN: ${HF_AUTH_TOKEN}
+  WANDB_API_KEY: ${WANDB_API_KEY}
+run: |
+  jupyter notebook --port 8888
