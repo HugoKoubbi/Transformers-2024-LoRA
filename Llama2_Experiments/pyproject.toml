@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "lora-analysis"
+version = "0.1.0"
+description = ""
+authors = ["Louis Hernandez <louis.hernandez35.lh@gmail.com>"]
+readme = "README.md"
+packages = [{include = "lora_analysis"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+transformers = "^4.36.2"
+peft = "^0.7.1"
+numpy = "^1.26.3"
+datasets = "^2.16.1"
+sentencepiece = "^0.1.99"
+trl = "^0.7.9"
+accelerate = "^0.26.1"
+wandb = "^0.16.2"
+bitsandbytes = "^0.42.0"
+matplotlib = "^3.8.2"
+pip = "^23.3.2"
+install = "^1.3.5"
+cupy-cuda12x = "^13.0.0"
+boto3 = "^1.34.26"
+seaborn = "^0.13.2"
+
+[tool.poetry.group.dev.dependencies]
+jupyter = "^1.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
