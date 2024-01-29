@@ -1,0 +1,19 @@
+# sft_llama.yaml
+
+name: sftllama
+workdir: .
+resources:
+  accelerators: A10G:1
+  use_spot: False
+
+file_mounts:
+  /ckpt:
+    name: llama-imdb-chkpts # NOTE: Fill in your bucket name
+    store: s3
+    mode: MOUNT
+setup: |
+  pip install -r requirement.txt
+  echo export WANDB_PROJECT=llama-imdb >> ~/.bashrc
+  echo export WANDB_RESUME=auto >> ~/.bashrc
+run: |
+  python code/finetuning_llama2.py
