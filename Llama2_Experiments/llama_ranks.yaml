@@ -1,0 +1,17 @@
+# sft_llama.yaml
+
+name: llamaranks
+workdir: .
+resources:
+  accelerators: A10G:1
+  use_spot: True
+
+file_mounts:
+  /npfiles:
+    name: npfiles-rank-estimation # NOTE: Fill in your bucket name
+    store: s3
+    mode: MOUNT
+setup: |
+  pip install .
+run: |
+  python lora_analysis/rank_estimation_llama2.py
