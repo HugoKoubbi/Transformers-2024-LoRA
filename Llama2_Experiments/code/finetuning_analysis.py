@@ -28,6 +28,7 @@ num_ckpts=len(os.listdir("../chkpt/"))
 all_ckpts=[f"../chkpt/checkpoint-{25*i}" for i in range(1,num_ckpts+1)]
 # ranks=[]
 eigenvalues_all=[]
+Ws=[]
 for ckpt in all_ckpts:
     model=AutoModelForCausalLM.from_pretrained(ckpt,token=hf_token,device_map="cpu")
     print(f'Checking weights on checkpoint {ckpt.split("-")[-1]}')
@@ -38,6 +39,7 @@ for ckpt in all_ckpts:
         lora_A=block.self_attn.v_proj.lora_A.default.weight.detach().numpy()
         lora_B=block.self_attn.v_proj.lora_B.default.weight.detach().numpy()
         deltaW=lora_B@lora_A
+        Ws.append(deltaW)
         # rank=np.linalg.matrix_rank(deltaW)
         # ranks_ckpt.append(rank)
         eigenvalues, eigenvectors = LA.eig(deltaW)
@@ -60,6 +62,7 @@ eigenvalues_all=np.array(eigenvalues_all)
 if not os.path.exists('/npfiles/finetuning'):
     os.makedirs('/npfiles/finetuning')
 np.save('/npfiles/finetuning/eigenvalues_all.npy',eigenvalues_all)
+np.save('/npfiles/finetuning/Ws.npy',Ws)
 
 
 # %%

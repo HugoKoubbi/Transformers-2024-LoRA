@@ -1,0 +1,16 @@
+# sft_llama.yaml
+
+name: finetuningalalysis
+workdir: .
+resources:
+  use_spot: False
+
+file_mounts:
+  /npfiles:
+    name: npfiles-rank-estimation # NOTE: Fill in your bucket name
+    store: s3
+    mode: MOUNT
+setup: |
+  pip install -r requirement.txt
+run: |
+  python code/get_eigenvalues_lora.py

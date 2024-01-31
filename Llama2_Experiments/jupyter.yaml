@@ -3,8 +3,9 @@
 name: jupyter
 workdir: .
 resources:
-  accelerators: A10G:1
+  # accelerators: A10G:1
   use_spot: True
+  instance_type: m6i.8xlarge
 file_mounts:
   /npfiles::
     name: npfiles-rank-estimation # NOTE: Fill in your bucket name

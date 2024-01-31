@@ -1,6 +1,7 @@
 #%%
 from datasets import load_dataset
 from transformers import AutoTokenizer
+import os
 
 access_token=os.environ["HF_AUTH_TOKEN"]
 
@@ -28,7 +29,7 @@ for i,block in tqdm(enumerate(model.model.layers)):
     q=block.self_attn.q_proj.weight.detach().numpy()
     k=block.self_attn.k_proj.weight.detach().numpy()
     v=block.self_attn.v_proj.weight.detach().numpy()
-    qtk=np.matmul(q,k.T)
+    qtk=np.matmul(k.T,q)
     rank=np.linalg.matrix_rank(qtk)
     ranks.append(rank)
     s=LA.svd(v,compute_uv=False)

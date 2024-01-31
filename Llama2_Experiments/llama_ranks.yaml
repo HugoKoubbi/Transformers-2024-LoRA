@@ -12,6 +12,6 @@ file_mounts:
     store: s3
     mode: MOUNT
 setup: |
-  pip install .
+  pip install -r requirement.txt
 run: |
-  python lora_analysis/rank_estimation_llama2.py
+  python code/rank_estimation_llama2.py

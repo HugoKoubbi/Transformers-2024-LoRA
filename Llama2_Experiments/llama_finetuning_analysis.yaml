@@ -11,6 +11,6 @@ file_mounts:
     store: s3
     mode: MOUNT
 setup: |
-  pip install .
+  pip install -r requirement.txt
 run: |
-  python lora_analysis/finetuning_analysis.py
+  python code/finetuning_analysis.py
