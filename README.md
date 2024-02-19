@@ -21,18 +21,14 @@
 
 ## Abstract
 
-*In this paper, we employ the mathematical frame-
-work on Transformers developed by Sander et al.
+*In this paper, we employ the mathematical framework on Transformers developed by Sander et al.
 (2022); Geshkovski et al. (2024); Geshkovski
 et al. (2023) to explore how variations in atten-
 tion parameters and initial token values impact the
-structural dynamics of token clusters. Our analy-
-sis demonstrates that while the clusters within a
+structural dynamics of token clusters. Our analysis demonstrates that while the clusters within a
 modified attention matrix dynamics can exhibit
-significant divergence from the original over ex-
-tended periods, they maintain close similarities
-over shorter intervals, depending on the param-
-eter differences. This work contributes to the
+significant divergence from the original over extended periods, they maintain close similarities
+over shorter intervals, depending on the parameter differences. This work contributes to the
 fine-tuning field through practical applications to
 the LoRA algorithm (Hu et al., 2022; Mangrulkar
 et al., 2022), enhancing our understanding of the
