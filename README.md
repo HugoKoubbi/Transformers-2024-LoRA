@@ -3,20 +3,9 @@
   The impact of LoRA on the emergence of clusters in Transformers
 </h1>
 
-<p align="center">
-  <a href=>
-  </a>
-</p>
-
 <tt>Python</tt> codes for the paper 
 **The impact of LoRA on the emergence of clusters in Transformers** by Hugo Koubbi, Matthieu Boussard and Louis Hernandez. 
 
-
-
-<p align="center">
-  <img src="" alt="animated" width="250"/>
-  <img src=" alt="animated" width="250"/>
-</p>
 
 
 ## Abstract
